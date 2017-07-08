@@ -1,0 +1,32 @@
+---
+pkg:
+- hadoop_2_5_0_0_1245-mapreduce.x86_64
+- ranger_2_5_0_0_1245-yarn-plugin.x86_64
+- ranger_2_5_0_0_1245-yarn-plugin.x86_64
+- hadoop_2_5_0_0_1245-yarn.x86_64
+- ranger_2_5_0_0_1245-hdfs-plugin.x86_64
+- ranger_2_5_0_0_1245-hdfs-plugin.x86_64
+- spark2_2_5_0_0_1245-yarn-shuffle.noarch
+- hadoop_2_5_0_0_1245-hdfs.x86_64
+- spark_2_5_0_0_1245-yarn-shuffle.noarch
+- zookeeper_2_5_0_0_1245.noarch
+- bigtop-jsvc.x86_64
+- hadoop_2_5_0_0_1245-client.x86_64
+- hadoop_2_5_0_0_1245-libhdfs.x86_64
+
+
+usr:
+- hive
+- storm
+- zookeeper
+- tez
+- zeppelin
+- spark
+- ambari-qa
+- kafka
+- hdfs
+- yarn
+- mapred
+- hbase
+- hcat
+
