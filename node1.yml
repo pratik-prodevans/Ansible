@@ -1,0 +1,81 @@
+---
+- hosts: node1
+  become: true
+  remote_user: root
+  tasks:
+  - name: install python
+    yum:  
+      name: python
+      state: latest
+      
+  - name: Download Ambari-Repo
+    get_url: url=http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.4.2.0/ambari.repo dest=/etc/yum.repos.d/ambari.repo
+  - name: Install Epel
+    yum:
+      name: epel-release
+#  - name: "Download jdk 1.8 package"
+#   get_url: url="http://download.oracle.com/otn-pub/java/jdk/8u131-b11/dc1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.rpm" dest=/root
+  - name: Copy rpm file to node1
+    copy:
+      src: /root/Downloads/jdk-8u131-linux-x64.rpm
+      dest: /root/
+ 
+  - name: install jdk package
+    yum:
+      name: /root/jdk-8u131-linux-x64.rpm
+      state: present
+  - name: install ntp 
+    yum:
+      name: ntp
+      state: present
+  - name: start the ntp service
+    service: 
+      name: ntpd
+      state: started
+      enabled: yes
+  - name: Stop Firewall
+    service: 
+      name: firewalld
+      state: stopped
+      enabled: no
+
+  - name: Download Apache Maven
+    get_url: url=http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz dest=/opt
+    
+  - name: archive files of apache maven
+    shell: tar xzf apache-maven-3.3.9-bin.tar.gz
+
+    args: 
+      chdir: /opt
+
+  - name: apache maven
+    shell: ln -s apache-maven-3.3.9 maven 
+
+    args: 
+      chdir: /opt
+
+  - name: Set Enevironment Variables
+    copy:
+      content: | 
+                export M2_HOME=/opt/maven
+                export PATH=${M2_HOME}/bin:${PATH}
+
+      dest: /etc/profile.d/maven.sh
+      force: no
+  - name: Set Environment Path 
+    shell: source /etc/profile.d/maven.sh
+
+  - name: Install Ambari-Agent
+    yum:
+      name: ambari-agent
+
+  - name: Configure Ambari-Agent
+    lineinfile:
+      dest: /etc/ambari-agent/conf/ambari-agent.ini 
+      regexp: '^hostname='
+      line: 'hostname=server0.example.com'
+  
+  - command: ambar-agent start
+
+#    with_items: 
+#      - "{{pkg}}" 
